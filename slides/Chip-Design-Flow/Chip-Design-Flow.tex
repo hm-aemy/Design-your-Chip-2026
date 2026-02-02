@@ -118,9 +118,8 @@
   \item Describes the hardware behavior using a register-transfer level (RTL) abstraction.
   \item Technology-independent and focused on functionality, not physical implementation.
   \item Serves as the main input for simulation, verification, and synthesis.
-  \item \textcolor{red!50}{Module}, \textcolor{blue!50}{Body}, \textcolor{green!50}{Signal Declaration}, \textcolor{cyan!50}{Instantiation}, \textcolor{yellow!100}{Combinational Logic}
+  \item \textcolor{red!60}{Module}, \textcolor{blue!60}{Body}, \textcolor{green!70}{Signal Declaration}, \textcolor{cyan!70}{Instantiation}, \textcolor{yellow!100}{Combinational Logic}
 \end{itemize}
-
 \vspace{15mm}
     {\footnotesize
     \textbf{More Information on:}
@@ -149,8 +148,8 @@ output logic [Width-1:0] result_o
 \end{minted}
 \end{tcolorbox}
 \begin{tcolorbox}[
-  colback=blue!17,
-  colframe=blue!17,
+  colback=blue!20,
+  colframe=blue!20,
   boxrule=0pt,
   arc=0pt,
   left=2mm,right=2mm,top=1mm,bottom=1mm
@@ -203,7 +202,7 @@ endmodule // top
             \item Validates RTL functionality against the design specifications.
             \item Simulation checks behavior using testbenches and input stimuli.
             \begin{itemize}
-              \item Applies stimuli to the model under test (DUT) using testbenches.  
+              \item Applies stimuli to the Design Under Test (DUT) using testbenches.  
               \item Compares DUT outputs against a golden reference model.
               \item Detects functional mismatches and reports errors.
             \end{itemize}
@@ -281,7 +280,7 @@ endmodule // top
 \end{frame}
 
 \begin{frame}[fragile]
-\frametitle{Synthesis - How it looks in the Practice?}
+\frametitle{Synthesis - How it looks in Practice?}
 \begin{columns}
 \begin{column}{0.33\textwidth}
 \begin{minted}[fontsize=\scriptsize,frame=single]{verilog}
@@ -316,7 +315,7 @@ module fulladd(a, b, c_in, c_out, sum);
   assign sum[3] = _17_ ^ _01_;
 endmodule
 \end{minted}
-\captionof{listing}{Netlist after synthesis}
+\captionof{listing}{Netlist after initial synthesis}
 \end{column}
 \begin{column}{0.34\textwidth}
 \begin{minted}[fontsize=\scriptsize,frame=single]{verilog}
@@ -344,9 +343,8 @@ module fulladd(a, b, c_in, c_out, sum);
   );
   ...
 endmodule
-
 \end{minted}
-\captionof{listing}{Netlist after synthesis}
+\captionof{listing}{Netlist after technology mapping}
 \end{column}
 \end{columns}
 \begin{tikzpicture}[overlay, remember picture]

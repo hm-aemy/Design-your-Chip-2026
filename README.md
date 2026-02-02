@@ -21,9 +21,9 @@ Calendar
 ### Week 2
 
 | Time Block | Day 6 | Day 7 | Day 8 | Day 9 | Day 10 |
-| :--------: | :---: | :---: | :---: | :---: | :----: |
-|   Block 1  |       |       |       |       |        |
-|   Block 2  |       |       |       |       |        |
-|   Block 3  |       |       |       |       |        |
-|   Block 4  |       |       |       |       |        |
-|   Block 5  |       |       |       |       |        |
+| :--------: | :---: | :---: | :---: | Presentations | :----: |
+|   Block 1  |       |       |       | Presentations      |        |
+|   Block 2  |       |       |       | Presentations      |        |
+|   Block 3  |       |       |       | Presentations      |        |
+|   Block 4  |       |       |       | Presentations      |        |
+|   Block 5  |       |       |       | Presentations      |        |
