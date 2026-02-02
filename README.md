@@ -10,13 +10,13 @@ Calendar
 
 ### Week 1
 
-| Time Block | Day 1 | Day 2 | Day 3 | Day 4 | Day 5 |
-| :--------: | :---: | :---: | :---: | :---: | :---: |
-|   Block 1  |       |       |       |       |       |
-|   Block 2  |       |       |       |       |       |
-|   Block 3  |       |       |       |       |       |
-|   Block 4  |       |       |       |       |       |
-|   Block 5  |       |       |       |       |       |
+| Time Block | Day 1                    | Day 2 | Day 3 | Day 4 | Day 5 |
+| :--------: | :---:                    | :---: | :---: | :---: | :---: |
+|   Block 1  | Welcoming                | Work Environment      |       |       |       |
+|   Block 2  | Chip Design Context      | Librelane Flow      |       |       |       |
+|   Block 3  | Digital Chip Design Flow |       |       |       |       |
+|   Block 4  |                          |       |       |       |       |
+|   Block 5  |                          |       |       |       |       |
 
 ### Week 2
 
