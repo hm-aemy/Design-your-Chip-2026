@@ -90,4 +90,9 @@ The chip architecture is shown in the following.
 
 ![Architecture](architecture.drawio.svg)
 
-The main data path 
+The main data path consists of the following modules:
+
+- `adder`: stores the operands and computes the result
+- `bcd_convert`: convert the result to two BCD values
+- `seven_segment`: convert BCD value to seven segment (and stores the last one)
+- `controller`: controls the operation based on the button pushes
