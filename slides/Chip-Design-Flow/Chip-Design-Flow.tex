@@ -92,6 +92,11 @@
             \item Back-End transforms the RTL into a physical layout that meets timing, power, and manufacturing constraints.
             \item The process is iterative, with verification and checks at multiple stages before tape-out.
         \end{itemize}
+        \vspace{5mm}
+        {\footnotesize
+        \textbf{More Information on:}
+        \href{https://ocdcpro.github.io/educator-portal/handbook/digital_flow/}{Digital Flow}
+        }
     \end{column}
     \begin{column}{0.38\textwidth}
       \centering
@@ -100,10 +105,10 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[plain]
+\begin{frame}
 \vfill
 \centering
-{\LARGE Front-End}
+{\Huge \bfseries Front-End}
 \vfill
 \end{frame}
 
@@ -225,10 +230,10 @@ endmodule // top
 
 \section{Physical Implementation}
 
-\begin{frame}[plain]
+\begin{frame}
 \vfill
 \centering
-{\LARGE Back-End}
+{\Huge \bfseries Back-End}
 \vfill
 \end{frame}
 
@@ -386,7 +391,7 @@ endmodule
 \vspace{15mm}
     {\footnotesize
     \textbf{More Information on:}
-    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/floorplanning/}{Floorplanning}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/floorplaning.html}{Floorplanning}
     }
 
     \end{column}
@@ -556,8 +561,6 @@ endmodule
     \textbf{More Information on:}
     \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/routing.html}{Routing}
     }
-
-
   \end{column}
   \begin{column}{0.45\textwidth}
     \vspace{-9mm}
@@ -586,8 +589,9 @@ endmodule
 
   \end{column}
   \begin{column}{0.45\textwidth}
+    \vspace{-9mm}
     \raggedright
-    \includegraphics[width=1\linewidth]{img/detailed_routing_1.png}
+    \includegraphics[width=1\linewidth]{img/detailed_routing.png}
   \end{column}
 \end{columns}
 \end{frame}
@@ -595,72 +599,106 @@ endmodule
 \section{Signoff \& Physical Verification}
 
 \begin{frame}
-\frametitle{Signoff \& Physical Verification}
-\begin{enumerate}
-  \item Timing Signoff
-  \begin{enumerate}
-    \item Fill insertion
-    \item RC Extraction
-    \item STA post Physical Implementation
-  \end{enumerate}
-  \item Physical Verification
-  \begin{enumerate}
-    \item DRC
-    \item LVS
-  \end{enumerate}
-  \item Chip Finishing
-  \begin{enumerate}
-    \item Sealring
-    \item Metal Fill
-    \item Others...
-  \end{enumerate}
-\end{enumerate}
+\vfill
+\centering
+{\Huge \bfseries Signoff \& Physical Verification}
+\vfill
 \end{frame}
 
 \subsection{Timing Signoff}
 
+
 \begin{frame}
 \frametitle{Timing Signoff}
-
 \begin{columns}
-\begin{column}{0.33\textwidth}
+\begin{column}{0.5\textwidth}
   Fill Insertion
 \begin{itemize}
   \item Inserted to maintain well and power rail continuity.
   \item Do not implement logic; purely physical cells.
 \end{itemize}
 \centering
-\includegraphics[width=1\linewidth]{img/fillers.png}
+\includegraphics[width=0.8\linewidth]{img/fillers.png}
 
 \raggedright
-\vspace{5mm}
+\vspace{1mm}
     {\footnotesize
     \textbf{More Information on:}
-    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/parasitics_extraction/}{RC Extraction}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/parasitic_extraction.html}{RC Extraction}
     }
 
 \end{column}
-\begin{column}{0.33\textwidth}
+\begin{column}{0.5\textwidth}
 RC Extraction
 \begin{itemize}
   \item Extracts resistance and capacitance (RC) from the routed layout.
   \item Models parasitic effects of wires and vias.
 \end{itemize}
 \centering
-\includegraphics[width=0.6\linewidth]{img/rc-layout.png}
+\includegraphics[width=0.5\linewidth]{img/rc-layout.png}
 \end{column}
-\begin{column}{0.33\textwidth}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Timing Signoff}
+\begin{columns}
+\begin{column}{0.5\textwidth}
 STA post Physical Implementation
 \begin{itemize}
   \item Analyzes timing using post-layout parasitics (RC).
 \end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
 \centering
 \includegraphics[width=1\linewidth]{img/RC-timing_1.png}
 \includegraphics[width=1\linewidth]{img/RC-timing_2.png}
 \end{column}
 \end{columns}
-
 \end{frame}
+
+%\begin{frame}
+%\frametitle{Timing Signoff}
+
+%\begin{columns}
+%\begin{column}{0.33\textwidth}
+%  Fill Insertion
+%\begin{itemize}
+%  \item Inserted to maintain well and power rail continuity.
+%  \item Do not implement logic; purely physical cells.
+%\end{itemize}
+%\centering
+%\includegraphics[width=1\linewidth]{img/fillers.png}
+
+%\raggedright
+%\vspace{5mm}
+%    {\footnotesize
+%    \textbf{More Information on:}
+%    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/parasitics_extraction/}{RC Extraction}
+%    }
+%
+%\end{column}
+%\begin{column}{0.33\textwidth}
+%RC Extraction
+%\begin{itemize}
+%  \item Extracts resistance and capacitance (RC) from the routed layout.
+%  \item Models parasitic effects of wires and vias.
+%\end{itemize}
+%\centering
+%\includegraphics[width=0.6\linewidth]{img/rc-layout.png}
+%\end{column}
+%\begin{column}{0.33\textwidth}
+%STA post Physical Implementation
+%\begin{itemize}
+%  \item Analyzes timing using post-layout parasitics (RC).
+%\end{itemize}
+%\centering
+%\includegraphics[width=1\linewidth]{img/RC-timing_1.png}
+%\includegraphics[width=1\linewidth]{img/RC-timing_2.png}
+%\end{column}
+%\end{columns}
+%
+%\end{frame}
 
 \subsection{Layout (Physical) Verification}
 
@@ -675,14 +713,13 @@ STA post Physical Implementation
 \centering
 \includegraphics[width=0.9\linewidth]{img/drc-sg13g2-1.png}
 \end{column}
-
 \begin{column}{0.5\textwidth}
 \centering
 \includegraphics[width=1\linewidth]{img/drc-sg13g2.png}
 \end{column}
 \end{columns}
-
 \end{frame}
+
 
 \begin{frame}
 \frametitle{Physical Verification - LVS}
@@ -697,6 +734,8 @@ STA post Physical Implementation
     \item Export RTL and synthesized netlist from earlier stages.
     \item Compare both netlists to ensure they match.
   \end{itemize}
+
+
 \end{column}
 
 \begin{column}{0.55\textwidth}
@@ -738,7 +777,40 @@ Metal Fill
 \section{Tapeout \& Fabrication}
 
 \begin{frame}
-  \frametitle{Tapeout \& Fabrication}
+\frametitle{Tapeout \& Fabrication}
+\begin{itemize}
+  \item The final GDSII is sent to the foundry for manufacturing (tapeout).
+  \item Design changes are no longer possible after this point.
+  \item Chip fabrication takes weeks to months, depending on the technology.
+  \item The manufactured chips are returned for testing and validation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{From Design to Automation}
+\begin{columns}
+\begin{column}{0.6\textwidth}
+\begin{itemize}
+  \item Modern IC physical implementation is too complex to be done manually.
+  \item The number of transistors and design constraints require automated flows.
+  \item EDA tools enable the automation of synthesis, placement, routing, and signoff.
+  \item In this course, we use a fully open-source toolchain.
+  \item The next section introduces the LibreLane flow in detail.
+\end{itemize}
+\vspace{5mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/tools/}{EDA Tools}
+    }
+\end{column}
+\begin{column}{0.4\textwidth}
+\centering
+\includegraphics[width=0.45\linewidth]{img/openroad.png}
+\includegraphics[width=0.45\linewidth]{img/klayout.png}
+\includegraphics[width=1\linewidth]{img/yosys.png}
+\includegraphics[width=1\linewidth]{img/librelane.png}
+\end{column}
+\end{columns}
 \end{frame}
 
 \end{document}
