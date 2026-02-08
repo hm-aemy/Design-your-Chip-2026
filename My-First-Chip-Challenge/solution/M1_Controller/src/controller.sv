@@ -8,7 +8,7 @@ module controller(
     output logic show_result
 );
 
-    enum {IDLE, WAIT_B, WAIT_RESULT} state, next_state;
+    enum {GET_A,GET_B, SHOW_RESULT} state, next_state;
 
     always_comb begin : control_logic
         save_A = 0;
@@ -18,22 +18,22 @@ module controller(
         next_state = state;
 
         case (state)
-            IDLE: begin
+            GET_A: begin
                 if (button) begin
                     save_A = 1;
-                    next_state = WAIT_B;
+                    next_state = GET_B;
                 end
             end
-            WAIT_B: begin
+            GET_B: begin
                 if (button) begin
                     save_B = 1;
-                    next_state = WAIT_RESULT;
+                    next_state = SHOW_RESULT;
                 end
             end
-            WAIT_RESULT: begin
+            SHOW_RESULT: begin
                 if (button) begin
                     show_result = 1;
-                    next_state = IDLE;
+                    next_state = GET_A;
                 end
             end
         endcase
