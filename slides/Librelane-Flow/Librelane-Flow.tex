@@ -64,9 +64,13 @@
 An open-source, configurable digital ASIC flow built on open-source EDA tools, designed for education and real-world chip design.
 {
 \centering
-\includegraphics[width=0.95\linewidth]{img/configurable_flow.png}
+\includegraphics[width=0.85\linewidth]{img/configurable_flow.png}
 }
-\vspace{-5mm}  
+\vspace{1mm}
+{\footnotesize
+\textbf{More Information on:}
+\href{https://ocdcpro.github.io/educator-portal/handbook/digital_flow/librelane/}{Librelane}, \href{https://ocdcpro.github.io/educator-portal/handbook/tools/openroad/}{OpenROAD}
+}
 \end{frame}
 
 \section{Architectural Overview}
@@ -228,8 +232,11 @@ highlightcolor=green!15]{json}
 \begin{columns}
 \begin{column}{0.7\textwidth}
 \begin{itemize}
-  \item Generally used to harden a single design block from RTL to GDS.
-  \item Assumes a self-contained design.
+  \item The flow is organized as a sequence of well-defined steps, each performing a specific transformation or verification task.
+  \item Each step operates on the design state, progressively refining it from RTL to a manufacturable layout.
+  \item Steps can include analysis, transformation, validation, or checking stages.
+  \item The execution order is predefined, but individual steps can be enabled, disabled, or customized.  
+  \item Intermediate results are stored, allowing inspection, debugging, and visualization at any stage of the flow.
 \end{itemize}
 
 \end{column}
