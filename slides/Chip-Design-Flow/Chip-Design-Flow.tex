@@ -646,7 +646,11 @@ RC Extraction
 \begin{column}{0.5\textwidth}
 STA post Physical Implementation
 \begin{itemize}
-  \item Analyzes timing using post-layout parasitics (RC).
+  \item Uses post-layout parasitic extraction (RC) for accurate delay modeling.
+  \item Verifies setup and hold constraints on all timing paths.
+  \item Analyzes clock latency, skew, and uncertainty after CTS and routing.
+  \item Identifies critical paths and remaining timing violations.
+  \item Required for timing signoff before tapeout.
 \end{itemize}
 \end{column}
 \begin{column}{0.5\textwidth}

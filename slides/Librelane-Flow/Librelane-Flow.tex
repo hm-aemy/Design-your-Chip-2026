@@ -283,22 +283,20 @@ endmodule
 \end{minted}
 \end{column}
 \begin{column}{0.5\textwidth}
-\textcolor{red!100}{config.json}
-\begin{minted}[fontsize=\footnotesize]{json}
-{
-    "DESIGN_NAME": "counter_8bit",
-    "VERILOG_FILES": [
-        "src/counter_8bit.v"
-    ],
+\textcolor{red!100}{config.yaml}
+\begin{minted}[fontsize=\footnotesize]{yaml}
+DESIGN_NAME: counter_8bit
 
-    "CLOCK_PORT": "clk",
-    "CLOCK_PERIOD": 10,
+VERILOG_FILES:
+  - src/counter_8bit.v
 
-    "FP_CORE_UTIL": 50,
-    "FP_ASPECT_RATIO": 1.0,
-    
-    "PL_TARGET_DENSITY": 0.55
-}
+CLOCK_PORT: clk_i
+CLOCK_PERIOD: 10
+
+FP_CORE_UTIL: 50
+FP_ASPECT_RATIO: 1.0
+
+PL_TARGET_DENSITY: 0.55
 \end{minted}
 \vspace{10mm}
 \textcolor{red!100}{CLI}
