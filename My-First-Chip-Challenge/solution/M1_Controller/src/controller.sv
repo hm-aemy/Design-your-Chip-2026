@@ -41,7 +41,7 @@ module controller(
 
     always_ff @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            state <= IDLE;
+            state <= GET_A;
         end else begin
             state <= next_state;
         end

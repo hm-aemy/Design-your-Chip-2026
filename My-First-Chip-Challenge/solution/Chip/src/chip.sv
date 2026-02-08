@@ -36,8 +36,8 @@ module chip(
 
     bcd_converter u_bcd(
         .binary(result),
-        .tens(seg1),
-        .ones(seg0)
+        .tens(tens),
+        .ones(ones)
     );
 
     seven_segment u_seg0(
