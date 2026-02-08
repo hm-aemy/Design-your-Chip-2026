@@ -16,7 +16,14 @@ A sequence looks like this:
 
 ### Inputs
 1. button - Control button
-2. in[4:0] - 4-bit input bus
+2. X[4:0] - 4-bit input bus
+
 ### Outputs
 1. seg0[6:0] - 7-segment display for last digit
 2. seg1[6:0] - 7-segment display for first digit
+
+## Operation
+
+The waveform below shows how chip will work:
+
+![wavedrom.svg](wavedrom.svg)
