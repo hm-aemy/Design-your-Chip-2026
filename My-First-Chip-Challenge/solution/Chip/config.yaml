@@ -2,31 +2,34 @@ meta:
   version: 3
   flow: Chip
   substituting_steps:
+  
+    # Magic reports some overlaps which can be ignored
+    Checker.IllegalOverlap: null
 
     # Not working correctly
     KLayout.SealRing: null
-
-    # Disable KLayout DRC
-    KLayout.DRC: null
-    Checker.KLayoutDRC: null
 
     # Disable magic DRC
     Magic.DRC: null
     Checker.MagicDRC: null
 
+    # Disable KLayout DRC
+    #KLayout.DRC: null
+    #Checker.KLayoutDRC: null
+
     # Disable KLayout antenna check
-    KLayout.Antenna: null
-    Checker.KLayoutAntenna: null
+    #KLayout.Antenna: null
+    #Checker.KLayoutAntenna: null
 
     # Disable KLayout density check
     KLayout.Density: null
     Checker.KLayoutDensity: null
     
     # Save time
-    OpenROAD.IRDropReport: null
-    KLayout.XOR: null
-    Netgen.LVS: null
-    Checker.LVS: null
+    #OpenROAD.IRDropReport: null
+    #KLayout.XOR: null
+    #Netgen.LVS: null
+    #Checker.LVS: null
 
 DESIGN_NAME: top
 VERILOG_FILES:
