@@ -9,11 +9,6 @@ module chip(
     output [6:0] seg1
 );
 
-    controller u_ctrl(
-        .clk(clk),
-        .rst_n(rst_n),
-        .button(button)
-    );
 
     
 
