@@ -14,12 +14,53 @@ module top (
     wire      io_clock_p2c;
     wire      io_reset_p2c;
 
-    // Power/Ground IO pad instances
-    (* keep *) sg13g2_IOPadVdd sg13g2_IOPadVdd_south ();
-    (* keep *) sg13g2_IOPadVss sg13g2_IOPadVss_south ();
-    // Power/Ground IO pad IO instances
-    (* keep *) sg13g2_IOPadIOVdd sg13g2_IOPadIOVdd_south ();
-    (* keep *) sg13g2_IOPadIOVss sg13g2_IOPadIOVss_south ();
+    // Power/ground pad instances
+    generate
+    for (genvar i=0; i<1; i++) begin : iovdd_pads
+        (* keep *)
+        sg13g2_IOPadIOVdd iovdd_pad  (
+            `ifdef USE_POWER_PINS
+            .iovdd  (IOVDD),
+            .iovss  (IOVSS),
+            .vdd    (VDD),
+            .vss    (VSS)
+            `endif
+        );
+    end
+    for (genvar i=0; i<1; i++) begin : iovss_pads
+        (* keep *)
+        sg13g2_IOPadIOVss iovss_pad  (
+            `ifdef USE_POWER_PINS
+            .iovdd  (IOVDD),
+            .iovss  (IOVSS),
+            .vdd    (VDD),
+            .vss    (VSS)
+            `endif
+        );
+    end
+    for (genvar i=0; i<1; i++) begin : vdd_pads
+        (* keep *)
+        sg13g2_IOPadVdd vdd_pad  (
+            `ifdef USE_POWER_PINS
+            .iovdd  (IOVDD),
+            .iovss  (IOVSS),
+            .vdd    (VDD),
+            .vss    (VSS)
+            `endif
+        );
+    end
+    for (genvar i=0; i<1; i++) begin : vss_pads
+        (* keep *)
+        sg13g2_IOPadVss vss_pad  (
+            `ifdef USE_POWER_PINS
+            .iovdd  (IOVDD),
+            .iovss  (IOVSS),
+            .vdd    (VDD),
+            .vss    (VSS)
+            `endif
+        );
+    end
+    endgenerate
 
     sg13g2_IOPadIn sg13g2_IOPad_io_clock (
         `ifdef USE_POWER_PINS
