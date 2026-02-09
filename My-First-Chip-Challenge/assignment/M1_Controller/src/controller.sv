@@ -1,13 +1,13 @@
 module controller(
-    input clk,
-    input rst_n,
-    input button,
+    input logic clk,
+    input logic rst_n,
+    input logic button,
 
-    output save_A,
-    output save_B,
-    output show_result
+    output logic save_A,
+    output logic save_B,
+    output logic show_result
 );
 
-    
+
 
 endmodule

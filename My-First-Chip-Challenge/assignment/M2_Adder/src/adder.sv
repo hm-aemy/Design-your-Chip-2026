@@ -6,4 +6,5 @@ module adder(
     output [4:0] result
 );
 
+
 endmodule
