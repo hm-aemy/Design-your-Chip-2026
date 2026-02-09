@@ -1,0 +1,820 @@
+\documentclass[20pt]{beamer}
+
+
+\usetheme{hm}
+
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+% Subsecciones (indentadas)
+\setbeamertemplate{subsection in toc}{
+  \hspace*{3.0em}% <<< INDENTACIÓN
+  \llap{\inserttocsectionnumber.\inserttocsubsectionnumber\ }%
+  \inserttocsubsection\par
+}
+
+\usepackage{minted}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage{tcolorbox}
+
+% Kein Dekor auf Titelfolie
+%\usetheme[nodecotitle]{hm}
+
+% Kein Dekor auf anderen Folien
+%\usetheme[nodeco]{hm}
+
+% Logo im Titel und nicht unten (für wide&nodeco interessant)
+%\usetheme[logotop]{hm}
+
+% Keine Foliennummer
+%\usetheme[noframenum]{hm}
+
+% Creative Commons CC-BY Lizenz
+%\usetheme[ccby]{hm}
+
+\author{Daniel Arevalos}
+\institute{Fakultät 07 -- Hochschule München}
+\title{Chip Design \& Implementation}
+%\title{Vorlesung I mit einem langen Titel über zwei Zeilen}
+\subtitle{From RTL to GDSII}
+%\subtitle{Kapitel 1 -- Eine Einführung die über zwei Zeilen geht und trotzdem gut passt}
+
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\setlength{\parskip}{0mm}
+\begin{frame}
+\frametitle{Table of Contents}
+\vspace{3cm}
+\tableofcontents
+\vspace{2cm}
+
+\begin{tikzpicture}[overlay, remember picture]
+
+% Llave FRONT-END (secciones 1–3)
+\draw[
+  decorate,
+  decoration={brace, amplitude=8pt},
+  line width=1.2pt
+]
+  (11.5cm,14cm) -- (11.5cm,12.3cm)
+  node[midway, right=10pt]{\large Front-End};
+
+% Llave BACK-END (secciones 4–5)
+\draw[
+  decorate,
+  decoration={brace, amplitude=8pt},
+  line width=1.2pt
+]
+  (11.5cm,12cm) -- (11.5cm,3.5cm)
+  node[midway, right=10pt]{\large Back-End};
+
+\end{tikzpicture}
+
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}
+\frametitle{Introduction}
+\begin{columns}
+    \begin{column}{0.6\textwidth}
+        \begin{itemize}
+            \item Digital IC design follows a structured flow from high-level specifications to fabrication.
+            \item The flow is divided into Front-End (technology-independent) and Back-End (technology-dependent) stages.
+            \item Front-End focuses on functionality and correctness (RTL design and verification).
+            \item Back-End transforms the RTL into a physical layout that meets timing, power, and manufacturing constraints.
+            \item The process is iterative, with verification and checks at multiple stages before tape-out.
+        \end{itemize}
+        \vspace{5mm}
+        {\footnotesize
+        \textbf{More Information on:}
+        \href{https://ocdcpro.github.io/educator-portal/handbook/digital_flow/}{Digital Flow}
+        }
+    \end{column}
+    \begin{column}{0.38\textwidth}
+      \centering
+      \includegraphics[width=0.63\textwidth]{img/VLSI-flow-v2.png}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\vfill
+\centering
+{\Huge \bfseries Front-End}
+\vfill
+\end{frame}
+
+\section{RTL Design}
+
+\begin{frame}[fragile]
+\frametitle{RTL Design}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+  \item Describes the hardware behavior using a register-transfer level (RTL) abstraction.
+  \item Technology-independent and focused on functionality, not physical implementation.
+  \item Serves as the main input for simulation, verification, and synthesis.
+  \item \textcolor{red!60}{Module}, \textcolor{blue!60}{Body}, \textcolor{green!70}{Signal Declaration}, \textcolor{cyan!70}{Instantiation}, \textcolor{yellow!100}{Combinational Logic}
+\end{itemize}
+\vspace{15mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://vlsi.ethz.ch/w/images/d/de/02_RTL.pdf}{Refresher on SystemVerilog}
+    }
+
+\end{column}
+\begin{column}{0.65\textwidth}
+\begin{tcolorbox}[
+  colback=red!15,
+  colframe=red!15,
+  boxrule=0pt,
+  arc=0pt,
+  left=2mm,right=2mm,top=1mm,bottom=1mm
+]
+\begin{minted}[fontsize=\footnotesize]{verilog}
+module top #(
+parameter int Width = 16
+) (
+input logic clk_i,
+input logic rst_ni,
+input logic mode_i,
+input logic [Width-1:0] data_in_i,
+output logic [Width-1:0] result_o
+);
+\end{minted}
+\end{tcolorbox}
+\begin{tcolorbox}[
+  colback=blue!20,
+  colframe=blue!20,
+  boxrule=0pt,
+  arc=0pt,
+  left=2mm,right=2mm,top=1mm,bottom=1mm
+]
+\begin{minted}[fontsize=\footnotesize, highlightlines={1-3},
+highlightcolor=green!15]{verilog}
+// Declare signals to be used in the module
+logic [Width-1:0] first, second;
+logic [Width-1:0] combine_and, combine_or;
+\end{minted}
+\begin{minted}[fontsize=\footnotesize, highlightlines={1-5},
+highlightcolor=cyan!15]{verilog}
+// instantiate two blocks with different names i_reg_1 and frank
+ffs #(.Width(Width)) i_reg_1 (
+.clk_i(clk_i), .rst_ni(rst_ni), .in_i(data_in_i), .out_o(first));
+ffs #(.Width(Width)) frank (
+.clk_i(clk_i), .rst_ni(rst_ni), .in_i(first), .out_o(second));
+\end{minted}
+\begin{minted}[fontsize=\footnotesize, highlightlines={1-5},
+highlightcolor=yellow!15]{verilog}
+// combine outputs
+assign combine_and = first & second ;
+assign combine_or = first | second ;
+// assign result
+assign result_o = mode_i ? combine_and : combine_or ;
+\end{minted}
+\end{tcolorbox}
+\begin{tcolorbox}[
+  colback=red!15,
+  colframe=red!15,
+  boxrule=0pt,
+  arc=0pt,
+  left=2mm,right=2mm,top=1mm,bottom=1mm
+]
+\begin{minted}[fontsize=\footnotesize]{verilog}
+endmodule // top
+\end{minted}
+\end{tcolorbox}
+\end{column}
+\end{columns}
+\end{frame}
+
+\section{Simulation \& Formal Verification}
+
+\begin{frame}
+\frametitle{Simulation \& Formal Verification}
+\begin{columns}
+    \begin{column}{0.6\textwidth}
+        \begin{itemize}
+            \item Validates RTL functionality against the design specifications.
+            \item Simulation checks behavior using testbenches and input stimuli.
+            \begin{itemize}
+              \item Applies stimuli to the Design Under Test (DUT) using testbenches.  
+              \item Compares DUT outputs against a golden reference model.
+              \item Detects functional mismatches and reports errors.
+            \end{itemize}
+            \item Formal verification proves correctness using mathematical models, without test vectors.
+        \end{itemize}
+    \vspace{15mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/simulation.html}{Simulation}
+    }
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+        \includegraphics[width=1\textwidth]{img/simualtion-process.png}
+        \includegraphics[width=1\textwidth]{img/surfer.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\section{Physical Implementation}
+
+\begin{frame}
+\vfill
+\centering
+{\Huge \bfseries Back-End}
+\vfill
+\end{frame}
+
+\subsection{Synthesis}
+\begin{frame}
+\frametitle{Synthesis - Standard Cells}
+\begin{columns}
+    \begin{column}{0.5\textwidth}
+        \begin{itemize}
+            \item Pre-designed and pre-characterized logic building blocks.
+            \item Provided by the foundry or PDK as a standard cell library.
+            \item Characterized for timing, power, and area.
+            \item Used by synthesis tools to map RTL into hardware.
+        \end{itemize}
+
+\vspace{15mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/synthesis.html}{Synthesis}
+    }
+
+    \end{column}
+
+    \begin{column}{0.5\textwidth}
+        \centering
+        \includegraphics[width=0.8\textwidth]{img/and2.png}
+    \end{column}
+  \end{columns}
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{Synthesis - Inputs \& Outputs}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+        \begin{itemize}
+            \item Inputs: RTL design (HDL) and design constraints.
+            \item Uses standard cell and IP libraries for mapping.
+            \item Translates RTL into a gate-level netlist.
+            \item Preserves functional behavior while meeting timing and area constraints.
+        \end{itemize}
+\vspace{15mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/synthesis.html}{Synthesis}
+    }
+
+    \end{column}
+
+    \begin{column}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1.05\textwidth]{img/synthesis.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Synthesis - How it looks in Practice?}
+\begin{columns}
+\begin{column}{0.33\textwidth}
+\begin{minted}[fontsize=\scriptsize,frame=single]{verilog}
+module example (
+    input  wire clk,
+    input  wire rst,
+    output wire y
+);
+    assign y = clk & ~rst;
+endmodule
+\end{minted}
+\captionof{listing}{RTL code}
+\vspace{10mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/synthesis.html}{Synthesis}
+    }
+
+\end{column}
+\begin{column}{0.33\textwidth}
+\begin{minted}[fontsize=\scriptsize,frame=single]{verilog}
+module fulladd(a, b, c_in, c_out, sum);
+  wire _00_;
+  wire _01_;
+  wire _02_;
+  ...
+  input [3:0] a;
+  wire [3:0] a;
+  ...
+  assign _14_ = _07_ & ~(_13_);
+  assign _15_ = _06_ & ~(_14_);
+  assign c_out = _15_ | _04_;
+  assign sum[0] = ~(_10_ ^ c_in);
+  assign sum[1] = ~(_12_ ^ _08_);
+  assign sum[2] = _14_ ^ _05_;
+  assign _16_ = ~(_14_ | _05_);
+  assign _17_ = _16_ | ~(_02_);
+  assign sum[3] = _17_ ^ _01_;
+endmodule
+\end{minted}
+\captionof{listing}{Netlist after initial synthesis}
+\end{column}
+\begin{column}{0.34\textwidth}
+\begin{minted}[fontsize=\scriptsize,frame=single]{verilog}
+module fulladd(a, b, c_in, c_out, sum);
+  wire _00_;
+  wire _01_;
+  wire _02_;
+  ...
+  output [3:0] sum;
+  wire [3:0] sum;
+  sg13g2_xor2_1 _61_ (
+    .A(_25_),.B(_21_),.X(_42_)
+  );
+  sg13g2_o21ai_1 _62_ (
+    .A1(_40_),.A2(_41_),.B1(_28_),.Y(_27_)
+  );
+  sg13g2_xnor2_1 _63_ (
+    .A(_26_),.B(_35_),.Y(_43_)
+  );
+  sg13g2_xnor2_1 _64_ (
+    .A(_36_),.B(_38_),.Y(_44_)
+  );
+  sg13g2_xnor2_1 _65_ (
+    .A(_31_),.B(_39_),.Y(_45_)
+  );
+  ...
+endmodule
+\end{minted}
+\captionof{listing}{Netlist after technology mapping}
+\end{column}
+\end{columns}
+\begin{tikzpicture}[overlay, remember picture]
+\draw[->, line width=4pt] (6.8cm,7.7cm) -- (8cm,7.7cm);
+\draw[->, line width=4pt] (17.5cm,7.7cm) -- (18.8cm,7.7cm);
+\end{tikzpicture}
+\end{frame}
+
+
+\subsection{Floorplanning}
+
+\begin{frame}
+\frametitle{Floorplanning}
+
+\begin{columns}
+    \begin{column}{0.45\textwidth}
+        \begin{itemize}
+            \item The unit cost of IC is directly proportional to the silicon area.
+            \item The netlist gives us the net cell area needed, but:
+            \begin{itemize}
+              \item Additional area is required to bring power and timing/clock signals to all cells.
+            \end{itemize}
+            \item I/O and packaging constraints must be considered.
+            \item Macros (RAM, PLL, etc.) must be placed.
+        \end{itemize}
+
+\vspace{15mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/floorplaning.html}{Floorplanning}
+    }
+
+    \end{column}
+
+    \begin{column}{0.55\textwidth}
+      \vspace{-7mm}
+      \raggedright
+      \includegraphics[width=1.1\linewidth]{img/floorplan_init.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Floorplanning - Padring}
+
+\begin{columns}
+    \begin{column}{0.38\textwidth}
+        \begin{itemize}
+            \item Physical connection to package.
+            \item Electro Static Discharge (ESD) protection.
+            \begin{itemize}
+              \item Make sure that electrical discharge does not damage internal circuitry.
+            \end{itemize}
+            \item I/O Drivers.
+            \item Types of I/O Cells.
+            \begin{itemize}
+              \item Digital I/O Buffers.
+              \item Analog I/O Cells.
+              \item Power/Ground Supply Pads.
+            \end{itemize}
+        \end{itemize}
+
+\vspace{10mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/floorplanning/}{Floorplanning}
+    }
+
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \centering
+      \includegraphics[width=1.05\linewidth]{img/padring.png}\par
+      \includegraphics[width=1.1\linewidth]{img/esd_chain.png}
+    \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Floorplanning - Power Grid}
+\begin{columns}
+    \begin{column}{0.4\textwidth}
+        \begin{itemize}
+            \item Power Rings. Distribute power from pads to core area.
+            \item Power Stripes. Distribute power within core area.
+            \item Power PADs. Connect power grid to standard cells.
+        \end{itemize}
+
+\vspace{30mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/floorplanning/}{Floorplanning}
+    }
+
+    \end{column}
+
+    \begin{column}{0.6\textwidth}
+        \centering
+        \includegraphics[width=1\linewidth]{img/power_grid.png}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\subsection{Placement}
+
+\begin{frame}
+\frametitle{Global Placement}
+\begin{columns}
+  \begin{column}{0.45\textwidth}
+    \begin{itemize}
+      \item Distributes standard cells across the core using approximate positions.
+      \item Optimizes wirelength and congestion at a global level.
+      \item Produces a continuous placement (cells may overlap or be non-legal).
+    \end{itemize}
+
+\vspace{30mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/placement.html}{Placement}
+    }
+
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{img/global_placement.png}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Detailed Placement}
+\begin{columns}
+  \begin{column}{0.45\textwidth}
+    \begin{itemize}
+      \item Also known as legalization.
+      \item Takes the global placement and fixes exact cell locations on rows.
+      \item Performs local optimizations (shifts, swaps) to improve wirelength and timing while respecting rules.
+    \end{itemize}
+
+\vspace{30mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/placement.html}{Placement}
+    }
+
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \centering
+    \includegraphics[width=1\linewidth]{img/detailed_placement.png}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\subsection{CTS}
+
+\begin{frame}
+\frametitle{Clock Tree Synthesis (CTS)}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{itemize}
+      \item Clock Tree Synthesis (CTS) builds the clock network.
+      \item Ensures clock reaches all sequential elements.
+      \item Minimizes clock skew and insertion delay.
+      \item Guarantees correct timing across the design.
+    \end{itemize}
+
+
+  
+  \end{column}
+  \begin{column}{0.6\textwidth}
+    \centering
+    \includegraphics[width=0.47\linewidth]{img/chip-before-cts.png}
+    \centering
+    \includegraphics[width=0.52\linewidth]{img/cluster-before-cts.png}
+    \centering
+    \includegraphics[width=0.47\linewidth]{img/chip-after-cts.png}
+    \centering
+    \includegraphics[width=0.52\linewidth]{img/cluster-after-cts.png}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\subsection{Routing}
+
+\begin{frame}
+\frametitle{Global Routing}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{itemize}
+      \item Plans approximate net routes using a grid of routing cells (GCells).
+      \item Models routing capacity and congestion across the chip.
+      \item Produces routing guides, not final metal wires.
+      \item Guides detailed routing toward a feasible solution.
+\end{itemize}
+
+\vspace{30mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/routing.html}{Routing}
+    }
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \vspace{-9mm}
+    \raggedright
+    \includegraphics[width=1.03\linewidth]{img/global_routing.png}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Detailed Routing}
+\begin{columns}
+  \begin{column}{0.5\textwidth}
+    \begin{itemize}
+      \item Converts global routing guides into exact physical wires and vias.
+      \item Assigns routes to specific tracks, layers, and vias.
+      \item Strictly enforces all design rules (DRC): width, spacing, enclosures, min-area, etc.
+      \item Produces a clean, manufacturable routing.
+\end{itemize}
+
+\vspace{20mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/routing.html}{Routing}
+    }
+
+  \end{column}
+  \begin{column}{0.45\textwidth}
+    \vspace{-9mm}
+    \raggedright
+    \includegraphics[width=1\linewidth]{img/detailed_routing.png}
+  \end{column}
+\end{columns}
+\end{frame}
+
+\section{Signoff \& Physical Verification}
+
+\begin{frame}
+\vfill
+\centering
+{\Huge \bfseries Signoff \& Physical Verification}
+\vfill
+\end{frame}
+
+\subsection{Timing Signoff}
+
+
+\begin{frame}
+\frametitle{Timing Signoff}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+  Fill Insertion
+\begin{itemize}
+  \item Inserted to maintain well and power rail continuity.
+  \item Do not implement logic; purely physical cells.
+\end{itemize}
+\centering
+\includegraphics[width=0.8\linewidth]{img/fillers.png}
+
+\raggedright
+\vspace{1mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/parasitic_extraction.html}{RC Extraction}
+    }
+
+\end{column}
+\begin{column}{0.5\textwidth}
+RC Extraction
+\begin{itemize}
+  \item Extracts resistance and capacitance (RC) from the routed layout.
+  \item Models parasitic effects of wires and vias.
+\end{itemize}
+\centering
+\includegraphics[width=0.5\linewidth]{img/rc-layout.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}
+\frametitle{Timing Signoff}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+STA post Physical Implementation
+\begin{itemize}
+  \item Uses post-layout parasitic extraction (RC) for accurate delay modeling.
+  \item Verifies setup and hold constraints on all timing paths.
+  \item Analyzes clock latency, skew, and uncertainty after CTS and routing.
+  \item Identifies critical paths and remaining timing violations.
+  \item Required for timing signoff before tapeout.
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\includegraphics[width=1\linewidth]{img/RC-timing_1.png}
+\includegraphics[width=1\linewidth]{img/RC-timing_2.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+%\begin{frame}
+%\frametitle{Timing Signoff}
+
+%\begin{columns}
+%\begin{column}{0.33\textwidth}
+%  Fill Insertion
+%\begin{itemize}
+%  \item Inserted to maintain well and power rail continuity.
+%  \item Do not implement logic; purely physical cells.
+%\end{itemize}
+%\centering
+%\includegraphics[width=1\linewidth]{img/fillers.png}
+
+%\raggedright
+%\vspace{5mm}
+%    {\footnotesize
+%    \textbf{More Information on:}
+%    \href{https://ocdcpro.github.io/educator-portal/handbook/concepts/parasitics_extraction/}{RC Extraction}
+%    }
+%
+%\end{column}
+%\begin{column}{0.33\textwidth}
+%RC Extraction
+%\begin{itemize}
+%  \item Extracts resistance and capacitance (RC) from the routed layout.
+%  \item Models parasitic effects of wires and vias.
+%\end{itemize}
+%\centering
+%\includegraphics[width=0.6\linewidth]{img/rc-layout.png}
+%\end{column}
+%\begin{column}{0.33\textwidth}
+%STA post Physical Implementation
+%\begin{itemize}
+%  \item Analyzes timing using post-layout parasitics (RC).
+%\end{itemize}
+%\centering
+%\includegraphics[width=1\linewidth]{img/RC-timing_1.png}
+%\includegraphics[width=1\linewidth]{img/RC-timing_2.png}
+%\end{column}
+%\end{columns}
+%
+%\end{frame}
+
+\subsection{Layout (Physical) Verification}
+
+\begin{frame}
+\frametitle{Physical Verification - DRC}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+  \item DRC run at the fullchip level to ensure that the layout adheres to the foundry's physical rules (geometries, spacing, etc.)
+\end{itemize}
+\centering
+\includegraphics[width=0.9\linewidth]{img/drc-sg13g2-1.png}
+\end{column}
+\begin{column}{0.5\textwidth}
+\centering
+\includegraphics[width=1\linewidth]{img/drc-sg13g2.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Physical Verification - LVS}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+    \item Extract layout (GDS) and build a SPICE netlist
+    \begin{itemize}
+      \item Sometimes need to black-box sensitive layouts.
+    \end{itemize}
+    \item Export RTL and synthesized netlist from earlier stages.
+    \item Compare both netlists to ensure they match.
+  \end{itemize}
+
+
+\end{column}
+
+\begin{column}{0.55\textwidth}
+\centering
+\includegraphics[width=1.1\linewidth]{img/LVS.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\subsection{Chip Finishing}
+
+\begin{frame}
+\frametitle{Chip Finishing}
+
+\begin{columns}
+\begin{column}{0.6\textwidth}
+Sealring
+\begin{itemize}
+  \item Protective structure placed around the chip perimeter.
+  \item Helps isolate the core circuitry during dicing and packaging.
+\end{itemize}
+\centering
+\includegraphics[width=0.5\linewidth]{img/sealring.png}
+\end{column}
+
+\begin{column}{0.45\textwidth}
+Metal Fill
+\begin{itemize}
+  \item The wafer surface is polished to ensure flatness.
+  \item Metal fill is added to areas of low metal density to even out the overall density across the chip.
+\end{itemize}
+\centering
+\includegraphics[width=1\linewidth]{img/dishing-erosion.png}
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\section{Tapeout \& Fabrication}
+
+\begin{frame}
+\frametitle{Tapeout \& Fabrication}
+\begin{itemize}
+  \item The final GDSII is sent to the foundry for manufacturing (tapeout).
+  \item Design changes are no longer possible after this point.
+  \item Chip fabrication takes weeks to months, depending on the technology.
+  \item The manufactured chips are returned for testing and validation.
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{From Design to Automation}
+\begin{columns}
+\begin{column}{0.6\textwidth}
+\begin{itemize}
+  \item Modern IC physical implementation is too complex to be done manually.
+  \item The number of transistors and design constraints require automated flows.
+  \item EDA tools enable the automation of synthesis, placement, routing, and signoff.
+  \item In this course, we use a fully open-source toolchain.
+  \item The next section introduces the LibreLane flow in detail.
+\end{itemize}
+\vspace{5mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/tools/}{EDA Tools}
+    }
+\end{column}
+\begin{column}{0.4\textwidth}
+\centering
+\includegraphics[width=0.45\linewidth]{img/openroad.png}
+\includegraphics[width=0.45\linewidth]{img/klayout.png}
+\includegraphics[width=1\linewidth]{img/yosys.png}
+\includegraphics[width=1\linewidth]{img/librelane.png}
+\end{column}
+\end{columns}
+\end{frame}
+
+\end{document}

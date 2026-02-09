@@ -1,0 +1,393 @@
+\documentclass[20pt]{beamer}
+
+
+\usetheme{hm}
+
+\setbeamertemplate{section in toc}[sections numbered]
+\setbeamertemplate{subsection in toc}[subsections numbered]
+
+% Subsecciones (indentadas)
+\setbeamertemplate{subsection in toc}{
+  \hspace*{3.0em}% <<< INDENTACIÓN
+  \llap{\inserttocsectionnumber.\inserttocsubsectionnumber\ }%
+  \inserttocsubsection\par
+}
+
+\usepackage{minted}
+\usepackage{tikz}
+\usepackage{caption}
+\usepackage{subfigure}
+\usepackage{tcolorbox}
+
+% Kein Dekor auf Titelfolie
+%\usetheme[nodecotitle]{hm}
+
+% Kein Dekor auf anderen Folien
+%\usetheme[nodeco]{hm}
+
+% Logo im Titel und nicht unten (für wide&nodeco interessant)
+%\usetheme[logotop]{hm}
+
+% Keine Foliennummer
+%\usetheme[noframenum]{hm}
+
+% Creative Commons CC-BY Lizenz
+%\usetheme[ccby]{hm}
+
+\author{Daniel Arevalos}
+\institute{Fakultät 07 -- Hochschule München}
+\title{Librelane Flow}
+%\title{Vorlesung I mit einem langen Titel über zwei Zeilen}
+\subtitle{A practical guide to chip design flow}
+%\subtitle{Kapitel 1 -- Eine Einführung die über zwei Zeilen geht und trotzdem gut passt}
+
+\begin{document}
+
+\begin{frame}[plain]
+\titlepage
+\end{frame}
+
+\setlength{\parskip}{0mm}
+\begin{frame}
+\frametitle{Table of Contents}
+\vspace{3cm}
+\tableofcontents
+\vspace{2cm}
+\end{frame}
+
+\section{What is Librelane?}
+
+\begin{frame}
+\frametitle{What is Librelane?}
+\vspace{5mm}
+\raggedright
+An open-source, configurable digital ASIC flow built on open-source EDA tools, designed for education and real-world chip design.
+{
+\centering
+\includegraphics[width=0.85\linewidth]{img/configurable_flow.png}
+}
+\vspace{1mm}
+{\footnotesize
+\textbf{More Information on:}
+\href{https://ocdcpro.github.io/educator-portal/handbook/digital_flow/librelane/}{Librelane}, \href{https://ocdcpro.github.io/educator-portal/handbook/tools/openroad/}{OpenROAD}
+}
+\end{frame}
+
+\section{Architectural Overview}
+
+\begin{frame}
+  \frametitle{Architectural Overview}
+
+  \vspace{10mm}
+  \centering
+  \includegraphics[width=0.75\linewidth]{img/librelane-overview.png}
+
+\end{frame}
+
+\section{Librelane Flow}
+
+\subsection{Config File}
+
+\begin{frame}[fragile]
+\frametitle{Config File}
+
+\begin{columns}
+\begin{column}{0.3\textwidth}
+\begin{minted}[fontsize=\footnotesize, highlightlines={2-5},
+highlightcolor=red!15]{json}
+{
+  "DESIGN_NAME": "my_design",
+  "VERILOG_FILES": [
+    "src/my_design.v"
+  ],
+\end{minted}
+\begin{minted}[fontsize=\footnotesize, highlightlines={1-2},
+highlightcolor=blue!15]{json}
+  "CLOCK_PORT": "clk",
+  "CLOCK_PERIOD": 10,
+
+\end{minted}
+\begin{minted}[fontsize=\footnotesize, highlightlines={1-2},
+highlightcolor=cyan!15]{json}
+  "FP_CORE_UTIL": 50,
+  "FP_ASPECT_RATIO": 1.0
+\end{minted}
+\begin{minted}[fontsize=\footnotesize, highlightlines={2},
+highlightcolor=green!15]{json}
+
+  "PL_TARGET_DENSITY": 0.55,
+}
+\end{minted}
+\vspace{10mm}
+    {\footnotesize
+    \textbf{More Information on:}
+    \href{https://ocdcpro.github.io/educator-portal/handbook/digital_flow/librelane/#config-file}{Config File}
+    }
+
+\end{column}
+\begin{column}{0.6\textwidth}
+\begin{itemize}
+  \item \textcolor{red!60}{Design Definition:} Defines the logical identity of the design and specifies the RTL sources that will be used as input for the flow. 
+  \item \textcolor{blue!60}{Clock Definition:} Describes the main clock interface and timing target that guide synthesis, timing analysis, and optimization throughout the flow.
+  \item \textcolor{cyan!60}{Floorplanning (High-level):} Sets high-level constraints that shape the core area, controlling utilization and overall layout proportions.
+  \item \textcolor{green!100}{Placement Control:} Guides how densely standard cells are packed during placement to balance area efficiency and routability.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\subsection{Macros}
+
+
+\begin{frame}[fragile]
+\frametitle{Macros}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{minted}[fontsize=\scriptsize]{json}
+"MACROS": {
+  "your_module": {
+    "gds": "path/your_module.gds",
+    "lef": "path/your_module.lef",
+    "nl":  "path/your_module.pnl.v",
+
+    "lib": {
+      "nom_typ_1p20V_25C":  "path/your_module.lib",
+      "nom_fast_1p32V_m40C": "path/your_module.lib",
+      "nom_slow_1p08V_125C": "path/your_module.lib"
+    },
+
+    "spef": {
+      "nom_typ_1p20V_25C": "path/your_module.spef"
+    },
+
+    "instances": {
+      "inst_0": { "location": [640, 630], "orientation": "N" },
+      "inst_1": { "location": [440, 430], "orientation": "N" }
+    }
+  }
+}
+\end{minted}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+  \item A physical abstract view (LEF) to define area, pins, and routing blockages.
+  \item A final layout (GDS) used for stream-out and sign-off verification.
+  \item A logical netlist to connect the macro at the top level.
+  \item Timing models across relevant corners for chip-level timing analysis.
+  \item Optional parasitic information to improve accuracy during sign-off.
+  \item Fixed placement information when the macro must be placed explicitly.
+\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\subsection{Classic vs Chip flow}
+
+\begin{frame}[fragile]
+\frametitle{Classic vs Chip flow}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{minted}[fontsize=\footnotesize]{json}
+{
+"meta": {
+        "version": 3,
+        "flow": "Classic"
+    },
+...
+}
+\end{minted}
+\centering
+\includegraphics[width=0.7\linewidth]{img/counter_gds.png}
+%\begin{itemize}
+%  \item Generally used to harden a single design block from RTL to GDS.
+%  \item Assumes a self-contained design.
+%\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{minted}[fontsize=\footnotesize]{json}
+{
+"meta": {
+        "version": 3,
+        "flow": "Chip"
+    },
+...
+}
+\end{minted}
+\centering
+\includegraphics[width=0.7\linewidth]{img/counter_chip_gds.png}
+%\begin{itemize}
+%  \item Generally used to integrate multiple hardened macros into a full chip.
+%  \item Focuses on chip-level constraints and padring.
+%\end{itemize}
+\end{column}
+\end{columns}
+\end{frame}
+
+\subsection{Steps}
+
+\begin{frame}
+\frametitle{Steps}
+
+\begin{columns}
+\begin{column}{0.7\textwidth}
+\begin{itemize}
+  \item The flow is organized as a sequence of well-defined steps, each performing a specific transformation or verification task.
+  \item Each step operates on the design state, progressively refining it from RTL to a manufacturable layout.
+  \item Steps can include analysis, transformation, validation, or checking stages.
+  \item The execution order is predefined, but individual steps can be enabled, disabled, or customized.  
+  \item Intermediate results are stored, allowing inspection, debugging, and visualization at any stage of the flow.
+\end{itemize}
+
+\end{column}
+\begin{column}{0.3\textwidth}
+
+\centering
+\includegraphics[width=0.4\linewidth]{img/librelane-steps.png}
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\section{Quick tutorial}
+
+\subsection{Classic Flow}
+
+\begin{frame}[fragile]
+\frametitle{Quick tutorial - Classic Flow}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+
+\vspace{10mm}
+\textcolor{red!100}{counter\_8bit.v}
+\begin{minted}[fontsize=\footnotesize]{verilog}
+{
+module counter_8bit (
+	input  logic       clk_i,
+	input  logic       rst_ni,
+	output logic [7:0] count_o
+);
+
+	always_ff @(posedge clk_i) begin
+        	if (!rst_ni) begin
+            	count_o <= '0;
+        	end else begin
+            	count_o <= count_o + 1;
+        	end
+	end
+
+endmodule
+}
+\end{minted}
+\end{column}
+\begin{column}{0.5\textwidth}
+\textcolor{red!100}{config.yaml}
+\begin{minted}[fontsize=\footnotesize]{yaml}
+DESIGN_NAME: counter_8bit
+
+VERILOG_FILES:
+  - src/counter_8bit.v
+
+CLOCK_PORT: clk_i
+CLOCK_PERIOD: 10
+
+FP_CORE_UTIL: 50
+FP_ASPECT_RATIO: 1.0
+
+PL_TARGET_DENSITY: 0.55
+\end{minted}
+\vspace{10mm}
+\textcolor{red!100}{CLI}
+\begin{minted}[fontsize=\footnotesize]{bash}
+export PDK=ihp-sg13g2
+librelane -pdk ihp-sg13g2 config.json
+\end{minted}
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Visualization of Results}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{minted}[fontsize=\footnotesize]{bash}
+librelane --last-run config.json --flow OpenInOpenROAD
+\end{minted}
+\begin{minted}[fontsize=\tiny, breaklines]{text}
+runs/<run_tag>
+|-- final
+|-- tmp
+|-- error.log
+|-- info.log
+|-- resolved.json
+|-- warning.log
+|-- 01-verilator-lint
+|-- 02-checker-linttimingconstructs
+|-- 03-checker-linterrors
+|-- 04-yosys-jsonheader
+|-- 05-yosys-synthesis
+|-- 06-checker-yosysunmappedcells
+|-- 07-checker-yosyssynthchecks
+|-- 08-openroad-checksdcfiles
+|-- 09-openroad-staprepnr
+|-- 10-openroad-floorplan
+|-- 11-odb-setpowerconnections
+|-- 12-odb-manualmacroplacement
+|-- 13-openroad-cutrows
+|-- 14-openroad-tapendcapinsertion
+|-- 15-openroad-globalplacementskipio
+.
+.
+.
+\end{minted}
+
+\end{column}
+\begin{column}{0.5\textwidth}
+
+\centering
+\includegraphics[width=1\linewidth]{img/openroad_gui.png}
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\subsection{Chip Flow}
+
+\begin{frame}
+  \frametitle{Quick tutorial - Chip Flow}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+  \item Full-chip design integrating two 8-bit counter macros.
+  \item Macros are reused from the Classic flow and instantiated at the top level.
+  \item Shared clock and reset, producing a 16-bit output.
+  \item Dedicated core and IO power pads.
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+
+\centering
+\includegraphics[width=1\linewidth]{img/counter_chip_openroad.png}
+
+\end{column}
+\end{columns}
+\end{frame} 
+
+
+%\subsection{Modifying Steps}
+
+%\begin{frame}
+%\frametitle{Modifying Steps}
+%the idea here is that I show that you can modify most of the steps for example the OpenROAD scripts in tcl. example the pdn.tcl -> like was necessary for the custom power rings for the SRAM macros.
+
+%Quizas sea una buena idea ponerle rings custom a uno de los contadores, para que asi luego muestre como tuve que modificar el TCL. 
+
+%Crear una narrativa con el tema de modificar los scripts y el segundo ejemplo mas complejo con el flow Chip, y no classic.
+%\end{frame}
+
+\end{document}
