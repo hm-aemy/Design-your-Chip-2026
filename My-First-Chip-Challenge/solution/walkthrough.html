@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc">
+  <title>walkthrough</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^5/dist/reset.css">
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^5/dist/reveal.css">
+  <style>
+    .reveal .sourceCode {  /* see #7635 */
+      overflow: visible;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@^5/dist/theme/simple.css" id="theme">
+  <link rel="stylesheet" href="hm.css"/>
+</head>
+<body>
+  <div class="reveal">
+    <div class="slides">
+
+
+<section>
+<section id="your-first-chip" class="title-slide slide level1">
+<h1>Your First Chip</h1>
+
+</section>
+<section id="help" class="slide level2">
+<h2>Help</h2>
+<p>Navigate left/right for the individual steps and up/down to dive
+deeper into topics or get more help.</p>
+</section>
+<section id="preparation" class="slide level2">
+<h2>Preparation</h2>
+<p>You can use the librelane template repo from Moodle.</p>
+<p>For the first part (<em>design and test</em>), do <strong>not use the
+Librelane nix-shell</strong>. Instead install icarus verilog in the
+Docker container or locally, e.g.,</p>
+<pre><code>apt install iverilog (Linux and Docker)
+brew install icarus-verilog (MacOS)</code></pre>
+</section>
+<section id="architecture" class="slide level2">
+<h2>Architecture</h2>
+<p>The following image shows the chip architecture.</p>
+<p><img data-src="../assignment/architecture.drawio.svg" /><br />
+</p>
+<p>We will implement and test each of the modules and then combine it
+into one design.</p>
+<p>Which one to start with?</p>
+</section></section>
+<section>
+<section id="bcd-converter" class="title-slide slide level1">
+<h1>BCD converter</h1>
+
+</section>
+<section id="introduction" class="slide level2">
+<h2>Introduction</h2>
+<p>Binary coded decimal: each digit is a bit value, for example decimal
+23:</p>
+<table>
+<thead>
+<tr>
+<th>2</th>
+<th>3</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>4’b0010</td>
+<td>4’b0011</td>
+</tr>
+</tbody>
+</table>
+<p><em>Note: <code>4'b0011</code> is the binary literal in Verilog: 4 is
+the size in bits, b is binary and then the number. The same number in
+hexadecimal (<code>h</code>) and decimal (<code>d</code>) representation
+is <code>4'h3</code> and <code>4'd3</code>.</em></p>
+<p>But what is the actual binary representation?</p>
+</section>
+<section id="conversion-from-binary-to-bcd" class="slide level2">
+<h2>Conversion from binary to BCD</h2>
+<p>Binary representation of 23 is <code>5'b10111</code>. This is how
+numbers are generally encoded.</p>
+<p><strong>Goal: Convert from binary to two digit BCD</strong></p>
+<p>Not trivial: <code>5'b10111</code> → <code>4'b0010</code> (tens) and
+<code>4'b0011</code>(ones). Converter is needed.</p>
+<p>How to do this?</p>
+</section>
+<section id="empty-module-with-ports" class="slide level2">
+<h2>Empty module with ports</h2>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> bcd_converter<span class="op">(</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span> logic <span class="op">[</span><span class="dv">4</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> binary<span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span> logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> tens<span class="op">,</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span> logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> ones</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">endmodule</span></span></code></pre></div>
+<p>Need to put logic into it.</p>
+</section>
+<section id="truth-table" class="slide level2">
+<h2>Truth table</h2>
+<div class="columns">
+<div class="column">
+<table>
+<thead>
+<tr>
+<th><code>binary[4:0]</code></th>
+<th><code>tens[3:0]</code></th>
+<th><code>ones[3:0]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>00000</code></td>
+<td><code>0000</code></td>
+<td><code>0000</code></td>
+</tr>
+<tr>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+</tr>
+<tr>
+<td><code>01001</code></td>
+<td><code>0000</code></td>
+<td><code>1001</code></td>
+</tr>
+<tr>
+<td><code>01010</code></td>
+<td><code>0001</code></td>
+<td><code>0000</code></td>
+</tr>
+<tr>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+</tr>
+<tr>
+<td><code>10010</code></td>
+<td><code>0010</code></td>
+<td><code>0000</code></td>
+</tr>
+<tr>
+<td>..</td>
+<td>..</td>
+<td>..</td>
+</tr>
+<tr>
+<td><code>11110</code></td>
+<td><code>0011</code></td>
+<td><code>0000</code></td>
+</tr>
+<tr>
+<td><code>11111</code></td>
+<td><code>0011</code></td>
+<td><code>0001</code></td>
+</tr>
+</tbody>
+</table>
+</div><div class="column" style="width:40%;">
+<p>Need to derive logic function for each of the output bits.</p>
+<p>Some are trivial:</p>
+<ul>
+<li><code>tens[3] = 0</code> and <code>tens[2] = 0</code></li>
+<li><code>ones[0] = binary[0]</code></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="lets-put-it-into-verilog" class="slide level2">
+<h2>Let’s put it into Verilog</h2>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> bcd_converter<span class="op">(</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span> logic <span class="op">[</span><span class="dv">4</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> binary<span class="op">,</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span> logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> tens<span class="op">,</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span> logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> ones</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">assign</span> tens<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">=</span> <span class="bn">1&#39;b0</span><span class="op">;</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">assign</span> tens<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">=</span> <span class="bn">1&#39;b0</span><span class="op">;</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="kw">assign</span> tens<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> binary<span class="op">[</span><span class="dv">0</span><span class="op">];</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="kw">endmodule</span></span></code></pre></div>
+</section>
+<section id="what-about-the-other-bits" class="slide level2">
+<h2>What about the other bits?</h2>
+<p>Straight forward way: Minterms</p>
+<p>Approach: Lookup all entries on the truth table where an output bit
+is set. The minterm is the disjunction (OR) of each of the input
+values.</p>
+<p>Example for <code>tens[1]</code> (is one for numbers 20 and
+above):</p>
+<p><span
+class="math display"><em>t</em><sub>1</sub> = (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x</em><sub>1</sub><em>x</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x̄</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x̄</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x̄</em><sub>2</sub><em>x</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x̄</em><sub>2</sub><em>x</em><sub>1</sub><em>x</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x</em><sub>2</sub><em>x</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x</em><sub>3</sub><em>x</em><sub>2</sub><em>x</em><sub>1</sub><em>x</em><sub>0</sub>)</span></p>
+</section>
+<section id="translate-this-into-verilog" class="slide level2">
+<h2>Translate this into Verilog</h2>
+<p><span
+class="math display"><em>t</em><sub>1</sub> = (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x̄</em><sub>1</sub><em>x</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x</em><sub>1</sub><em>x̄</em><sub>0</sub>) ∨ (<em>x</em><sub>4</sub><em>x̄</em><sub>3</sub><em>x</em><sub>2</sub><em>x</em><sub>1</sub><em>x</em><sub>0</sub>) ∨ ...</span></p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">assign</span> tens<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>binary<span class="op">[</span><span class="dv">4</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">&amp;</span> binary<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">0</span><span class="op">])</span> <span class="op">|</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>binary<span class="op">[</span><span class="dv">4</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">&amp;</span> binary<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">&amp;</span>  binary<span class="op">[</span><span class="dv">0</span><span class="op">])</span> <span class="op">|</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>binary<span class="op">[</span><span class="dv">4</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">&amp;</span> binary<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">&amp;</span>  binary<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">0</span><span class="op">])</span> <span class="op">|</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>binary<span class="op">[</span><span class="dv">4</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">~</span>binary<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">&amp;</span> binary<span class="op">[</span><span class="dv">2</span><span class="op">]</span> <span class="op">&amp;</span>  binary<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">&amp;</span>  binary<span class="op">[</span><span class="dv">0</span><span class="op">])</span> <span class="op">|</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    ...   </span></code></pre></div>
+</section>
+<section id="more-compact-version" class="slide level2">
+<h2>More compact version</h2>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">assign</span> tens<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;b10100</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;b10101</span><span class="op">)</span> <span class="op">|</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;b10110</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;b10111</span><span class="op">)</span> <span class="op">|</span> ...</span></code></pre></div>
+<div class="fragment">
+<p>We just enumerate the entries from the table here, and can make this
+even more intuitive:</p>
+</div>
+<div class="fragment">
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">assign</span> tens<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;d20</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;d21</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;d22</span><span class="op">)</span> <span class="op">|</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;d23</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;d24</span><span class="op">)</span> <span class="op">|</span> <span class="op">(</span>binary<span class="op">==</span><span class="bn">5&#39;d25</span><span class="op">)</span> <span class="op">|</span> ...</span></code></pre></div>
+</div>
+</section>
+<section id="logic-optimization" class="slide level2">
+<h2>Logic optimization</h2>
+<p>Use standard methods like K-map (<em>KV Diagramm</em>) to optimize
+boolean equation:</p>
+<div class="fragment">
+<p><span
+class="math display"><em>t</em><sub>1</sub> = <em>x</em><sub>4</sub><em>x</em><sub>3</sub> ∨ <em>x</em><sub>4</sub><em>x</em><sub>2</sub> = <em>x</em><sub>4</sub>(<em>x</em><sub>3</sub> ∨ <em>x</em><sub>2</sub>)</span></p>
+<p>translated to Verilog:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">assign</span> tens<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> binary<span class="op">[</span><span class="dv">4</span><span class="op">]</span> <span class="op">&amp;</span> <span class="op">(</span>binary<span class="op">[</span><span class="dv">3</span><span class="op">]</span> <span class="op">|</span> binary<span class="op">[</span><span class="dv">2</span><span class="op">]);</span></span></code></pre></div>
+<p><strong>Important: In the design process, the synthesis tool will
+perform optimizations, so that the result will be the same of all code
+variants above.</strong></p>
+</div>
+</section>
+<section id="tedious-process" class="slide level2">
+<h2>Tedious process</h2>
+<p>You can derive the entire logic like this, but it is an error prone
+and tedious process.</p>
+<p>Verilog and other hardware description languages allow for various
+ways to express this.</p>
+<div class="fragment">
+<p>For example, this is a simple expression for this bit:</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">assign</span> tens<span class="op">[</span><span class="dv">1</span><span class="op">]</span> <span class="op">=</span> <span class="op">(</span>binary <span class="op">&gt;=</span> <span class="dv">20</span><span class="op">);</span></span></code></pre></div>
+<p>But this approach also has limits for the other bits then..</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="kw">assign</span> tens<span class="op">[</span><span class="dv">0</span><span class="op">]</span> <span class="op">=</span> <span class="op">((</span>binary <span class="op">&gt;=</span><span class="dv">10</span><span class="op">)</span> <span class="op">&amp;&amp;</span> <span class="op">(</span>binary <span class="op">&lt;=</span> <span class="dv">19</span><span class="op">))</span> <span class="op">||</span> <span class="op">(</span>binary <span class="op">&gt;=</span> <span class="dv">30</span><span class="op">);</span></span></code></pre></div>
+</div>
+</section>
+<section id="straight-forward-from-truth-table" class="slide level2">
+<h2>Straight forward from truth table</h2>
+<p>Behavioral process in Verilog (is always called when any input
+changes), <em>lookup table (LUT)</em>:</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>always_comb <span class="kw">begin</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="kw">case</span> <span class="op">(</span>binary<span class="op">)</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="bn">5&#39;d0</span><span class="op">:</span> <span class="op">{</span>tens<span class="op">,</span> ones<span class="op">}</span> <span class="op">=</span> <span class="op">{</span><span class="bn">4&#39;d0</span><span class="op">,</span> <span class="bn">4&#39;d0</span><span class="op">};</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    <span class="bn">5&#39;d1</span><span class="op">:</span> <span class="op">{</span>tens<span class="op">,</span> ones<span class="op">}</span> <span class="op">=</span> <span class="op">{</span><span class="bn">4&#39;d0</span><span class="op">,</span> <span class="bn">4&#39;d1</span><span class="op">};</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* ... */</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="bn">5&#39;d9</span><span class="op">:</span> <span class="op">{</span>tens<span class="op">,</span> ones<span class="op">}</span> <span class="op">=</span> <span class="op">{</span><span class="bn">4&#39;d0</span><span class="op">,</span> <span class="bn">4&#39;d9</span><span class="op">};</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>    <span class="bn">5&#39;d10</span><span class="op">:</span>  <span class="op">{</span>tens<span class="op">,</span> ones<span class="op">}</span> <span class="op">=</span> <span class="op">{</span><span class="bn">4&#39;d1</span><span class="op">,</span> <span class="bn">4&#39;d0</span><span class="op">};</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* ... */</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="bn">5&#39;d20</span><span class="op">:</span>  <span class="op">{</span>tens<span class="op">,</span> ones<span class="op">}</span> <span class="op">=</span> <span class="op">{</span><span class="bn">4&#39;d2</span><span class="op">,</span> <span class="bn">4&#39;d0</span><span class="op">};</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">/* ... */</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="bn">5&#39;d30</span><span class="op">:</span>  <span class="op">{</span>tens<span class="op">,</span> ones<span class="op">}</span> <span class="op">=</span> <span class="op">{</span><span class="bn">4&#39;d3</span><span class="op">,</span> <span class="bn">4&#39;d0</span><span class="op">};</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="bn">5&#39;d31</span><span class="op">:</span>  <span class="op">{</span>tens<span class="op">,</span> ones<span class="op">}</span> <span class="op">=</span> <span class="op">{</span><span class="bn">4&#39;d3</span><span class="op">,</span> <span class="bn">4&#39;d1</span><span class="op">};</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>  <span class="kw">endcase</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span></code></pre></div>
+<p>This will also snythesize to the same result, probably most
+intuitive.</p>
+</section>
+<section id="implement-the-module-and-test-it" class="slide level2">
+<h2>Implement the module and test it</h2>
+<p>Use this (or one of the other) approaches in
+<code>M3_BCD/src/bcd_converter.sv</code>, or think about an even simpler
+one you think might exist.</p>
+<p>Test the module from the <code>M3_BCD/test</code> folder:</p>
+<pre class="shell"><code>python3 test_bcd_converter.py</code></pre>
+<p>We use a modern tool called <a
+href="https://cocotb.org"><em>cocotb</em></a> to test our hardware
+modules. Have a look at the test and ensure your module passes.</p>
+</section>
+<section id="test-output" class="slide level2">
+<h2>Test output</h2>
+<p>Expexted output:</p>
+<pre class="smallcode"><code>    0.00ns INFO     cocotb                             Running tests
+    0.00ns INFO     cocotb.regression                  running test_bcd_converter.test_all_values (1/1)
+                                                        Test: Iterate through all binary values from 0 to 31 and check BCD outputs.
+    1.00ns INFO     cocotb.bcd_converter               Checking value 0: expected tens 0, expected ones 0
+
+     [...]
+    
+    32.00ns INFO     cocotb.bcd_converter               ✓ Full test passed
+    32.00ns INFO     cocotb.regression                  test_bcd_converter.test_all_values passed
+    32.00ns INFO     cocotb.regression                  ********************************************************************************************
+                                                        ** TEST                                STATUS  SIM TIME (ns)  REAL TIME (s)  RATIO (ns/s) **
+                                                        ********************************************************************************************
+                                                        ** test_bcd_converter.test_all_values   PASS          32.00           0.00      15989.72  **
+                                                        ********************************************************************************************
+                                                        ** TESTS=1 PASS=1 FAIL=0 SKIP=0                       32.00           0.00      13999.97  **
+                                                        ********************************************************************************************         </code></pre>
+</section>
+<section id="viewing-the-waveform" class="slide level2">
+<h2>Viewing the waveform</h2>
+<p>You can also inspect the waveform with the Surfer waveform viewer
+(available is vscode plugin).</p>
+<p>To inspect the waveform, open
+<code>sim_build/bcd_converter.fst</code>.</p>
+<p>If you struggle with the task, see the next slide for the most simple
+solution.</p>
+</section>
+<section id="most-simple-implementation" class="slide level2">
+<h2>Most simple implementation</h2>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="kw">module</span> bcd_converter<span class="op">(</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    <span class="dt">input</span> logic <span class="op">[</span><span class="dv">4</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> binary<span class="op">,</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span> logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> tens<span class="op">,</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="dt">output</span> logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> ones</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="op">);</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">assign</span> tens <span class="op">=</span> binary <span class="op">/</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">assign</span> ones <span class="op">=</span> binary <span class="op">%</span> <span class="dv">10</span><span class="op">;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a><span class="kw">endmodule</span></span></code></pre></div>
+</section></section>
+<section>
+<section id="adder-module" class="title-slide slide level1">
+<h1>Adder module</h1>
+
+</section>
+<section id="functionality" class="slide level2">
+<h2>Functionality</h2>
+<ul>
+<li>The adder does not only add the two operands</li>
+<li>It also stores the operands when the button is pressed</li>
+<li>For this we need to create registers</li>
+<li>The result is a combinational output</li>
+</ul>
+</section>
+<section id="module-and-ports" class="slide level2">
+<h2>Module and Ports</h2>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>  <span class="kw">module</span> adder<span class="op">(</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>      <span class="dt">input</span> logic        clk<span class="op">,</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>      <span class="dt">input</span> logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span>  operand<span class="op">,</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>      <span class="dt">input</span> logic        save_A<span class="op">,</span> save_B<span class="op">,</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">output</span> logic <span class="op">[</span><span class="dv">4</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> result</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="op">);</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">endmodule</span></span></code></pre></div>
+<p>Find out how to create two flip flops, A and B, to save the
+operands.</p>
+</section>
+<section id="create-registers" class="slide level2">
+<h2>Create registers</h2>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>    logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> A<span class="op">;</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> B<span class="op">;</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    always_ff <span class="op">@(</span><span class="kw">posedge</span> clk<span class="op">)</span> <span class="kw">begin</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        <span class="co">/* Fill logic here */</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code></pre></div>
+<p>We do not need to reset them to sane values here.</p>
+</section>
+<section id="solution-registers" class="slide level2">
+<h2>Solution: Registers</h2>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>    logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> A<span class="op">;</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> B<span class="op">;</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    always_ff <span class="op">@(</span><span class="kw">posedge</span> clk<span class="op">)</span> <span class="kw">begin</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>save_A<span class="op">)</span> A <span class="op">&lt;=</span> operand<span class="op">;</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>save_B<span class="op">)</span> B <span class="op">&lt;=</span> operand<span class="op">;</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code></pre></div>
+<p>Next: Add the combinational logic that sets the result to the
+addition of A and B.</p>
+<p>Test the module again with <code>test/test_adder.py</code>. It tests
+the basic functionality and 10 random additions.</p>
+</section>
+<section id="combinational-logic" class="slide level2">
+<h2>Combinational logic</h2>
+<p>Very simple: You can just use the <code>+</code> operator, the
+synthesis tool will create an adder.</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>    <span class="kw">assign</span> result <span class="op">=</span> A <span class="op">+</span> B<span class="op">;</span></span></code></pre></div>
+<p>Done, but maybe you want to make really sure it works correctly?
+Write a test that checks all possible combinations of values.</p>
+</section>
+<section id="testing-all-cases" class="slide level2">
+<h2>Testing all cases</h2>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> a <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">16</span>):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> b <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">16</span>):</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>            expect <span class="op">=</span> a <span class="op">+</span> b</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>            dut._log.info(<span class="ss">f&quot;Test </span><span class="sc">{</span>a<span class="sc">}</span><span class="ss">+</span><span class="sc">{</span>b<span class="sc">}</span><span class="ss">, expecting </span><span class="sc">{</span>expect<span class="sc">}</span><span class="ss">&quot;</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>            <span class="cf">await</span> tester.set_operand(a, save_A<span class="op">=</span><span class="dv">1</span>, save_B<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>            <span class="cf">await</span> RisingEdge(tester.clk)</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>            <span class="cf">await</span> tester.set_operand(b, save_A<span class="op">=</span><span class="dv">0</span>, save_B<span class="op">=</span><span class="dv">1</span>)  </span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">await</span> RisingEdge(tester.clk)</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">await</span> tester.set_operand(<span class="dv">0</span>, save_A<span class="op">=</span><span class="dv">0</span>, save_B<span class="op">=</span><span class="dv">0</span>)  </span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>            <span class="cf">assert</span> tester.result.value <span class="op">==</span> expect,</span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>                <span class="ss">f&quot;Test </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">: Expected </span><span class="sc">{</span>expect<span class="sc">}</span><span class="ss">, got </span><span class="sc">{</span>tester<span class="sc">.</span>result<span class="sc">.</span>value<span class="sc">}</span><span class="ss">&quot;</span></span></code></pre></div>
+</section></section>
+<section>
+<section id="seven-segment" class="title-slide slide level1">
+<h1>Seven segment</h1>
+
+</section>
+<section id="seven-segment-displays" class="slide level2">
+<h2>Seven segment displays</h2>
+<p>Seven segment displays have 7 illuminated surfaces that can be used
+to display numbers.</p>
+<p><img data-src="M4_7segment/sevesegment.png" /><br />
+</p>
+</section>
+<section id="functionality-1" class="slide level2">
+<h2>Functionality</h2>
+<ul>
+<li>Whenever the <code>update</code> signal is high at a positive clock
+edge: store <code>digit</code> into a register (for example
+<code>value</code>)</li>
+<li>Decode the <strong>stored</strong> digit and display the
+numbers</li>
+<li>Mapping: <code>seg[6]</code> (most significant bit) to a,
+<code>seg[0]</code>(least significant bit) to g</li>
+<li>Hints: Using a lookup table is the most straightforward
+solution</li>
+<li>Again, you can test it with
+<code>test/test_seven_segment.py</code></li>
+</ul>
+<p>Continue to the next slides if you face any issues.</p>
+</section>
+<section id="solution-register" class="slide level2">
+<h2>Solution: Register</h2>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>    logic <span class="op">[</span><span class="dv">3</span><span class="op">:</span><span class="dv">0</span><span class="op">]</span> value<span class="op">;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    always_ff <span class="op">@(</span><span class="kw">posedge</span> clk<span class="op">)</span> <span class="kw">begin</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(</span>update<span class="op">)</span> value <span class="op">&lt;=</span> digit<span class="op">;</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code></pre></div>
+</section>
+<section id="solution-lookup-table" class="slide level2">
+<h2>Solution: Lookup Table</h2>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>    always_comb <span class="kw">begin</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>        <span class="kw">case</span> <span class="op">(</span>value<span class="op">)</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d0</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1111110</span><span class="op">;</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d1</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b0110000</span><span class="op">;</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d2</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1101101</span><span class="op">;</span></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d3</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1111001</span><span class="op">;</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d4</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b0110011</span><span class="op">;</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d5</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1011011</span><span class="op">;</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d6</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1011111</span><span class="op">;</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d7</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1110000</span><span class="op">;</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d8</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1111111</span><span class="op">;</span></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>            <span class="bn">4&#39;d9</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;b1111011</span><span class="op">;</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>            <span class="kw">default</span><span class="op">:</span> seg <span class="op">=</span> <span class="bn">7&#39;bxxxxxxx</span><span class="op">;</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        <span class="kw">endcase</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code></pre></div>
+</section></section>
+<section>
+<section id="controller" class="title-slide slide level1">
+<h1>Controller</h1>
+
+</section>
+<section id="functionality-2" class="slide level2">
+<h2>Functionality</h2>
+<p>The controller uses a trivial finite state machine.</p>
+<p>It is critical to adhere to the timing:</p>
+<ul>
+<li>On a button press, perform the action in the same cycle
+(<code>store_A</code>, <code>store_B</code>, <code>show_result</code>),
+and change the state in the next cycle.</li>
+<li>Ensure that the signals have proper default values.</li>
+</ul>
+</section>
+<section id="waveform" class="slide level2">
+<h2>Waveform</h2>
+<p><img data-src="M1_controller/doc/wavedrom.svg" /><br />
+</p>
+</section>
+<section id="coding-state-machines" class="slide level2">
+<h2>Coding state machines</h2>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>    enum <span class="op">{</span>GET_A<span class="op">,</span>GET_B<span class="op">,</span> SHOW_RESULT<span class="op">}</span> state<span class="op">,</span> next_state<span class="op">;</span></span></code></pre></div>
+</section>
+<section id="coding-state-machines-1" class="slide level2">
+<h2>Coding state machines</h2>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>    <span class="dv">always_comb begin :</span> control_logic</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>        save_A <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        save_B <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>        show_result <span class="op">=</span> <span class="dv">0</span><span class="op">;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>        next_state <span class="op">=</span> state<span class="op">;</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>        <span class="kw">case</span> <span class="op">(</span>state<span class="op">)</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>            <span class="dv">GET_A:</span> <span class="kw">begin</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>                <span class="kw">if</span> <span class="op">(</span>button<span class="op">)</span> <span class="kw">begin</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>                    <span class="co">// </span><span class="al">TODO</span><span class="co">:</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>                    next_state <span class="op">=</span> GET_B<span class="op">;</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>                <span class="kw">end</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a>            <span class="kw">end</span></span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>        <span class="kw">endcase</span></span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code></pre></div>
+</section>
+<section id="coding-state-machines-2" class="slide level2">
+<h2>Coding state machines</h2>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode verilog"><code class="sourceCode verilog"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>    always_ff <span class="op">@(</span><span class="kw">posedge</span> clk <span class="dt">or</span> <span class="kw">negedge</span> rst_n<span class="op">)</span> <span class="kw">begin</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>        <span class="kw">if</span> <span class="op">(!</span>rst_n<span class="op">)</span> <span class="kw">begin</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>            state <span class="op">&lt;=</span> GET_A<span class="op">;</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>        <span class="kw">end</span> <span class="kw">else</span> <span class="kw">begin</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>            state <span class="op">&lt;=</span> next_state<span class="op">;</span></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="kw">end</span></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">end</span></span></code></pre></div>
+</section>
+<section id="complete-and-test" class="slide level2">
+<h2>Complete and test</h2>
+<p>Once you have completed the module, run the tests
+<code>tests/test_controller.py</code>.</p>
+<p>You can find the solution <a
+href="https://github.com/hm-aemy/Design-your-Chip-2026/blob/main/My-First-Chip-Challenge/solution/M1_Controller/src/controller.sv">here</a>.</p>
+</section></section>
+    </div>
+  </div>
+
+  <script src="https://unpkg.com/reveal.js@^5/dist/reveal.js"></script>
+
+  <!-- reveal.js plugins -->
+  <script src="https://unpkg.com/reveal.js@^5/plugin/notes/notes.js"></script>
+  <script src="https://unpkg.com/reveal.js@^5/plugin/search/search.js"></script>
+  <script src="https://unpkg.com/reveal.js@^5/plugin/zoom/zoom.js"></script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+        // Display controls in the bottom right corner
+        controls: true,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: true,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'bottom-right',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: false,
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: false,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: true,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'default',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: true,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'slide',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'fade',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // reveal.js plugins
+        plugins: [
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    </body>
+</html>

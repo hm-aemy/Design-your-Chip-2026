@@ -1,0 +1,11 @@
+{"signal": [
+  {"name": "clk", "wave": "P.............."},
+  {"name": "rst_n", "wave": "101............"},
+  {"name": "button", "wave": "0..10...10..10."},
+  {},
+  {"name": "state", "wave": "xx=.=....=...=.", "data": ["IDLE", "WAIT_B", "WAIT_RESULT","IDLE"]},
+  {},
+  {"name": "save_A", "wave": "x.010.........."},
+  {"name": "save_B", "wave": "x.0.....10....."},
+  {"name": "show_result", "wave": "x.0.........10."}
+]}
