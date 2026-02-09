@@ -5,7 +5,7 @@ module seven_segment(
     output logic [6:0] seg
 );
 
-    logic [6:0] value;
+    logic [3:0] value;
 
     always_ff @(posedge clk) begin
         if (update) value <= digit;

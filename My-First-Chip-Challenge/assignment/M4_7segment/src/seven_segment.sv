@@ -1,7 +1,8 @@
 module seven_segment(
-    input [3:0] digit,
-    input update,
-    output [6:0] seg
+    input logic        clk,
+    input logic [3:0]  digit,
+    input logic        update,
+    output logic [6:0] seg
 );
 
 endmodule
